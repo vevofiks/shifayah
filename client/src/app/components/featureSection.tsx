@@ -41,24 +41,17 @@ const features = [
     arabic: 'مجتمع عالمي'
   }
 ];
-
 export default function FeaturesSection() {
-  const containerRef = useRef(null);
+  const containerRef = useRef<HTMLElement>(null);
   const [isInView, setIsInView] = useState(false);
   const [scrollY, setScrollY] = useState(0);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
-      ([entry]) => {
-        setIsInView(entry.isIntersecting);
-      },
-      { threshold: 0.1, rootMargin: '-100px' }
+      ([entry]) => setIsInView(entry.isIntersecting),
+      { threshold: 0.05, rootMargin: '0px' } // adjusted for mobile
     );
-
-    if (containerRef.current) {
-      observer.observe(containerRef.current);
-    }
-
+    if (containerRef.current) observer.observe(containerRef.current);
     return () => observer.disconnect();
   }, []);
 
@@ -68,100 +61,70 @@ export default function FeaturesSection() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const floatingOffset1 = scrollY * 0.1;
-  const floatingOffset2 = scrollY * -0.15;
+  const float1 = scrollY * 0.03;  // gentler movement
+  const float2 = scrollY * -0.05;
 
   return (
     <section 
       ref={containerRef} 
-      className="py-24 bg-gradient-to-br from-slate-50 to-cyan-50 relative overflow-hidden"
+      className="py-16 sm:py-24 bg-gradient-to-br from-slate-50 to-cyan-50 relative overflow-hidden"
     >
-      <div className="absolute inset-0 opacity-5">
-        <div className="absolute inset-0" style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23000000' fill-opacity='0.1'%3E%3Cpath d='M30 30c0-16.57 13.43-30 30-30v60c-16.57 0-30-13.43-30-30z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`
-        }}></div>
-      </div>
-
+      {/* Subtle Floating Arabic Calligraphy */}
       <div
-        style={{ transform: `translateY(${floatingOffset1}px)` }}
-        className="absolute top-20 right-10 text-6xl text-emerald-100 font-bold opacity-30 pointer-events-none transition-transform duration-100"
-      >
-        بِسْمِ
-      </div>
+        style={{ transform: `translateY(${float1}px)` }}
+        className="absolute top-8 right-4 sm:top-20 sm:right-10 text-4xl sm:text-6xl text-emerald-100 font-bold opacity-20 sm:opacity-30 pointer-events-none hidden sm:block"
+      >بِسْمِ</div>
       <div
-        style={{ transform: `translateY(${floatingOffset2}px)` }}
-        className="absolute bottom-20 left-10 text-8xl text-teal-100 font-bold opacity-20 pointer-events-none transition-transform duration-100"
-      >
-        القُرْآن
-      </div>
+        style={{ transform: `translateY(${float2}px)` }}
+        className="absolute bottom-8 left-4 sm:bottom-20 sm:left-10 text-6xl sm:text-8xl text-teal-100 font-bold opacity-10 sm:opacity-20 pointer-events-none hidden sm:block"
+      >القُرْآن</div>
 
-      <div className="max-w-7xl mx-auto px-6">
-        <div
-          className={`text-center mb-20 transition-all duration-800 ${
-            isInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'
-          }`}
-        >
-          <h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-teal-700 to-cyan-600 bg-clip-text text-transparent mb-6">
+      <div className="max-w-4xl sm:max-w-7xl mx-auto px-4 sm:px-6">
+        {/* Header */}
+        <div className={`text-center mb-12 sm:mb-20 transition-all duration-700 ${isInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}>
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold bg-gradient-to-r from-teal-700 to-cyan-600 bg-clip-text text-transparent mb-4 sm:mb-6">
             Why Choose Shifayah?
           </h2>
-          <p
-            className={`text-xl text-slate-600 max-w-3xl mx-auto transition-all duration-800 delay-300 ${
-              isInView ? 'opacity-100' : 'opacity-0'
-            }`}
-          >
+          <p className="text-base sm:text-xl text-slate-600 max-w-2xl mx-auto">
             Experience the most comprehensive Tajweed learning platform designed for modern students
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {features.map((feature, index) => {
-            const IconComponent = feature.icon;
+        {/* Feature Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+          {features.map((feature, idx) => {
+            const Icon = feature.icon;
             return (
               <div
-                key={index}
-                className={`group transition-all duration-600 ${
-                  isInView 
-                    ? 'opacity-100 translate-y-0' 
-                    : 'opacity-0 translate-y-12'
-                }`}
-                style={{ 
-                  transitionDelay: `${index * 200}ms`,
-                  perspective: '1000px'
-                }}
+                key={idx}
+                className={`group transition-all duration-600 ${isInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}
+                style={{ transitionDelay: `${idx * 150}ms`, perspective: 800 }}
               >
-                <div className="bg-white rounded-2xl p-8 shadow-xl hover:shadow-2xl transition-all duration-300 border border-slate-100 relative overflow-hidden transform hover:scale-105 hover:-rotate-1">
+                <div className="bg-white rounded-2xl p-6 sm:p-8 shadow-lg hover:shadow-2xl transition-transform duration-300 transform hover:scale-105 border border-slate-100 relative overflow-hidden">
                   <div className="absolute inset-0 bg-gradient-to-br from-emerald-50 to-cyan-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                  
+
                   <div className="relative z-10">
-                    <div className="mb-6 group-hover:rotate-12 transition-transform duration-300">
-                      <div className="w-16 h-16 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-2xl flex items-center justify-center group-hover:shadow-lg group-hover:shadow-emerald-200 transition-all duration-300">
-                        <IconComponent className="h-8 w-8 text-white" />
+                    <div className="mb-4 group-hover:rotate-12 transition-transform duration-300">
+                      <div className="w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-2xl flex items-center justify-center group-hover:shadow-xl">
+                        <Icon className="h-7 w-7 sm:h-8 sm:w-8 text-white" />
                       </div>
                     </div>
 
-                    <div
-                      className={`text-right mb-2 transition-all duration-500 ${
-                        isInView ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-5'
-                      }`}
-                      style={{ transitionDelay: `${index * 200 + 500}ms` }}
-                    >
-                      <span className="text-2xl font-bold text-amber-600">{feature.arabic}</span>
+                    <div className="mb-2 text-right">
+                      <span className="text-lg sm:text-xl font-bold text-amber-600">
+                        {feature.arabic}
+                      </span>
                     </div>
 
-                    <h3 className="text-2xl font-bold text-slate-800 mb-4 group-hover:text-emerald-700 transition-colors">
+                    <h3 className="text-xl sm:text-2xl font-bold text-slate-800 mb-3 group-hover:text-emerald-700">
                       {feature.title}
                     </h3>
 
-                    <p className="text-slate-600 leading-relaxed group-hover:text-slate-700 transition-colors">
+                    <p className="text-sm sm:text-base text-slate-600 leading-relaxed group-hover:text-slate-700">
                       {feature.description}
                     </p>
 
-                    <div
-                      className={`mt-6 h-1 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full transition-all duration-800 origin-left ${
-                        isInView ? 'scale-x-100' : 'scale-x-0'
-                      }`}
-                      style={{ transitionDelay: `${index * 200 + 800}ms` }}
-                    />
+                    <div className={`mt-4 h-1 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full transition-all duration-500 origin-left ${isInView ? 'scale-x-100' : 'scale-x-0'}`} style={{ transitionDelay: `${idx * 150 + 300}ms` }} />
                   </div>
                 </div>
               </div>
@@ -169,16 +132,11 @@ export default function FeaturesSection() {
           })}
         </div>
 
-        <div
-          className={`text-center mt-20 transition-all duration-800 delay-1000 ${
-            isInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'
-          }`}
-        >
-          <div className="inline-block transform hover:scale-105 active:scale-95 transition-transform duration-200">
-            <button className="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-semibold px-12 py-4 rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 text-lg">
-              Explore All Features
-            </button>
-          </div>
+        {/* CTA Button */}
+        <div className={`text-center mt-12 sm:mt-20 transition-all duration-700 ${isInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}>
+          <button className="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-semibold px-8 sm:px-12 py-3 sm:py-4 rounded-full shadow-lg hover:shadow-2xl transition-transform duration-200 transform hover:scale-105 active:scale-95">
+            Explore All Features
+          </button>
         </div>
       </div>
     </section>
